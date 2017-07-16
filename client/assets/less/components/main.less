@@ -1,0 +1,39 @@
+html{
+    height: 100%;
+}
+
+body{
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    background: @bg;
+    color: @color;
+    font-family: 'Inconsolata', monospace;
+    height: 100%;
+}
+
+*{
+    box-sizing: border-box;
+    outline: none;
+}
+
+.content{
+    max-width: @unit*32;
+    min-width: @unit*8;
+    margin: 0 auto;
+    padding: 10vh 0;
+    position: relative;
+    height: 100%;
+}
+
+@media(max-width: 640px){
+    .content{
+        padding: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+}

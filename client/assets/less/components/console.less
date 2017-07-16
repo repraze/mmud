@@ -1,0 +1,66 @@
+.mmud{
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex-flow: column;
+    height: 100%;
+    background: darken(@bg, 2%);
+
+    .mmud-screen{
+        flex: 1 1 auto;
+        min-height: 100px;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+
+        .mmud-screen-scroll{
+            padding: @unit/2;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .mmud-screen-text{
+            margin-bottom: @line * 3;
+        }
+    }
+
+    .mmud-input{
+        flex: 0 1 auto;
+
+        form{
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-flow: row;
+
+            textarea{
+                flex: 1 1 auto;
+                border: 0 none;
+                padding: @unit/2;
+                margin: 0;
+                background: darken(@bg, 6%);
+                color: @color;
+                font-size: @size;
+                line-height: @line;
+                max-height: 5*@line;
+                resize: none;
+                box-sizing: content-box;
+            }
+
+            button{
+                cursor: pointer;
+                flex: 0 1 auto;
+                border: 0 none;
+                padding: 0 @unit/2;
+                margin: 0;
+                background: @accent;
+                color: @color;
+            }
+        }
+    }
+}

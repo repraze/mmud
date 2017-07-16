@@ -36,7 +36,7 @@ class Command{
                 if(type && validators[type]){
                     try {
                         value = validators[type].validate(value);
-                    }catch(){
+                    }catch(e){
                         return;
                     }
                 }
@@ -81,7 +81,7 @@ class Parser{
             for(let commandName in this.commands){
                 let command = this.commands[commandName];
                 if(command.match(tockens, this.validators, runtime)){
-                    return command.run(runtime);
+                    res(command.run(runtime));
                 }
             }
         });
@@ -97,12 +97,6 @@ class Parser{
         return tockens;
     }
 }
-
-console.log(Parser.tokenize("hello world"));
-console.log(Parser.tokenize('hello world "move it"'));
-console.log(Parser.tokenize('hello world "move it'));
-console.log(Parser.tokenize('ç(- 67\' hello world "move it"'));
-console.log(Parser.tokenize('ç(-   67\'      hello world  "move it" "fezf è-_éè     76" daz "zef'));
 
 module.exports = {
     Command : Command,
