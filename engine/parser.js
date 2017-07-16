@@ -1,3 +1,4 @@
+const Types = require(__dirname+"/types")
 isArray = function(a){
     return a.constructor === Array;
 };
@@ -73,7 +74,11 @@ class Validator{
 class Parser{
     constructor(){
         this.commands = {};
-        this.validators = {};
+        this.validators = {
+            bool    : new Validator('bool', Types.bool),
+            string  : new Validator('string', Types.string),
+            int     : new Validator('int', Types.int),
+        };
     }
 
     use(obj){

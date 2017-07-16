@@ -5,9 +5,24 @@ let mmud = function(io){
     let manager = new SessionManager();
     let parser  = new Parser();
 
-    parser.use(new Command('ping', 'ping [something+]', function(runtime){
-        var str = runtime.args.something || "";
-        runtime.session.emit('text', "pong "+str.split('').reverse().join(''));
+    parser.use(new Command('ping', 'ping [string:text+]', function(runtime){
+        var text = runtime.args.text || "";
+        runtime.session.emit('text', 'pong ' + text);
+    }));
+
+    parser.use(new Command('reverse', 'reverse [bool:invert] [string:text+]', function(runtime){
+        var invert = runtime.args.invert;
+        var text = runtime.args.text || "";
+        if(invert){
+            text = text.split('').reverse().join('');
+        }
+        runtime.session.emit('text', text);
+    }));
+
+    parser.use(new Command('repeat', 'repeat [int:number] [string:text+]', function(runtime){
+        var number = runtime.args.number;
+        var text = runtime.args.text || "";
+        runtime.session.emit('text', text.repeat(number));
     }));
 
     io.on('connection', function(socket){
@@ -17,6 +32,7 @@ let mmud = function(io){
             parser.exec(action, {session : socket}).then(function(res){
 
             }).catch(function(err){
+                console.log(err);
                 socket.emit('text', 'Command not found');
             });
         });

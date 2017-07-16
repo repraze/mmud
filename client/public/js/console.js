@@ -48,6 +48,7 @@
                 }
                 input.val("");
                 autosize.update(input);
+                input.focus();
                 return false;
             });
 
