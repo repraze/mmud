@@ -26,10 +26,10 @@
             }
 
             var count = 0;
-            client.on('text', function(str){
+            var add = function(str, type){
                 var shouldScroll = sroll[0].scrollHeight===sroll.scrollTop()+sroll[0].offsetHeight;
 
-                text.append('<div>'+str.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</div>');
+                text.append('<div'+(type?' class="mmud-'+type+'"':'')+'>'+str.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</div>');
                 if(count<settings.max){
                     ++count;
                 }else{
@@ -39,7 +39,10 @@
                 if(shouldScroll){
                     scroll();
                 }
-            });
+            }
+
+            client.on('text', add);
+            client.on('echo', function(str){add(str, "echo")});
 
             form.submit(function(){
                 var str = input.val();

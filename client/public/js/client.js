@@ -10,6 +10,10 @@ class Client{
         this.socket.on('text', function(str){
             this.fire('text', str);
         }.bind(this));
+
+        this.socket.on('echo', function(str){
+            this.fire('echo', str);
+        }.bind(this));
     }
 
     get url(){

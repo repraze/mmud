@@ -29,6 +29,7 @@ let mmud = function(io){
         console.log('Connection id:'+socket.id);
 
         socket.on('action', function(action){
+            socket.emit('echo', '> '+action);
             parser.exec(action, {session : socket}).then(function(res){
 
             }).catch(function(err){
