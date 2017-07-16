@@ -1,0 +1,40 @@
+{
+  "name": "mmud",
+  "version": "1.0.0",
+  "description": "Modular MUD engine",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/repraze/mmud.git"
+  },
+  "keywords": [
+    "MUD",
+    "engine",
+    "modular",
+    "game",
+    "dungeon",
+    "multiplayer"
+  ],
+  "author": "Thomas Dubosc (http://repraze.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/repraze/mmud/issues"
+  },
+  "homepage": "https://github.com/repraze/mmud#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.0.0",
+    "gulp-clean-css": "^3.7.0",
+    "gulp-header": "^1.8.8",
+    "gulp-less": "^3.3.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-watch": "^4.3.11"
+  }
+}
