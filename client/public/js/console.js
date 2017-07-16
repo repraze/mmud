@@ -9,12 +9,12 @@
         return this.each(function(){
             var $this = $(this);
 
-            var title = $($this.find('.mmud-title')[0]);
-            var form = $($this.find('.mmud-form')[0]);
-            var input = $($this.find('.mmud-action')[0]);
-            var button = $($this.find('.mmud-send')[0]);
-            var sroll = $($this.find('.mmud-screen-scroll')[0]);
-            var text = $($this.find('.mmud-screen-text')[0]);
+            var title   = $($this.find('.mmud-title')[0]);
+            var form    = $($this.find('.mmud-form')[0]);
+            var input   = $($this.find('.mmud-action')[0]);
+            var button  = $($this.find('.mmud-send')[0]);
+            var sroll   = $($this.find('.mmud-screen-scroll')[0]);
+            var text    = $($this.find('.mmud-screen-text')[0]);
 
             title.text(client.url);
 
@@ -29,7 +29,7 @@
             client.on('text', function(str){
                 var shouldScroll = sroll[0].scrollHeight===sroll.scrollTop()+sroll[0].offsetHeight;
 
-                text.append('<div>'+str.replace("\n", "<br />")+'</div>');
+                text.append('<div>'+str.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</div>');
                 if(count<settings.max){
                     ++count;
                 }else{

@@ -1,8 +1,20 @@
+isArray = function(a){
+    return a.constructor === Array;
+};
+
 class Command{
     constructor(name, syntax, run){
         this.name   = name;
-        this.syntax = syntax || [];
+        this.syntax = [];
         this.run    = run || function(){};
+
+        if(syntax){
+            if(isArray(syntax)){
+                this.syntax = this.syntax.concat(syntax);
+            }else{
+                this.syntax.push(syntax);
+            }
+        }
     }
 
     match(tockens, validators, runtime){
@@ -25,7 +37,7 @@ class Command{
     validate(tockens, syntax, validators){
         let args = {};
         for(var i = 0; i < syntax.length; ++i) {
-            let key = syntax[key];
+            let key = syntax[i];
             if(key.charAt(0)==='['){
                 let param = key.match(/\[([^:\+]*):?([^\+]*)?(\+)?\]/);
                 let name = param[2] || param[1];
@@ -64,7 +76,7 @@ class Parser{
         this.validators = {};
     }
 
-    bind(obj){
+    use(obj){
         if(obj instanceof Command){
             this.commands[obj.name] = obj;
         }
@@ -81,10 +93,11 @@ class Parser{
             for(let commandName in this.commands){
                 let command = this.commands[commandName];
                 if(command.match(tockens, this.validators, runtime)){
-                    res(command.run(runtime));
+                    return res(command.run(runtime));
                 }
             }
-        });
+            rej(new Error("Command not found"));
+        }.bind(this));
     }
 
     static tokenize(str){
@@ -99,6 +112,7 @@ class Parser{
 }
 
 module.exports = {
-    Command : Command,
-    Parser  : Parser
+    Command     : Command,
+    Parser      : Parser,
+    Validator   : Validator
 };
