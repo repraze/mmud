@@ -1,15 +1,19 @@
 class Client{
     constructor(settings){
         this.settings = Object.assign({
-            url  : window.location.origin,
-            port : 8888
+            origin  : window.location.origin,
+            port    : 8888
         }, settings);
-        this.socket = io(this.settings.url+':'+this.settings.port);
+        this.socket = io(this.url);
         this.events = {};
 
         this.socket.on('text', function(str){
             this.fire('text', str);
         }.bind(this));
+    }
+
+    get url(){
+        return this.settings.origin+':'+this.settings.port;
     }
 
     on(name, cb){

@@ -9,11 +9,14 @@
         return this.each(function(){
             var $this = $(this);
 
+            var title = $($this.find('.mmud-title')[0]);
             var form = $($this.find('.mmud-form')[0]);
             var input = $($this.find('.mmud-action')[0]);
             var button = $($this.find('.mmud-send')[0]);
             var sroll = $($this.find('.mmud-screen-scroll')[0]);
             var text = $($this.find('.mmud-screen-text')[0]);
+
+            title.text(client.url);
 
             autosize(input);
 
