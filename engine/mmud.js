@@ -1,13 +1,16 @@
-const {Session, SessionManager} = require(__dirname+'/session.js');
-const {Parser, Command} = require(__dirname+'/parser.js');
+const {Session, SessionManager} = require(__dirname+'/session');
+const {Parser, Command} = require(__dirname+'/parser');
 
-let mmud = function(io){
+const IoService = require(__dirname+'/services/io-service');
+const NetService = require(__dirname+'/services/net-service');
+
+let mmud = function(http){
     let manager = new SessionManager();
     let parser  = new Parser();
 
     parser.use(new Command('ping', 'ping [string:text+]', function(runtime){
         var text = runtime.args.text || "";
-        runtime.session.emit('text', 'pong ' + text);
+        runtime.session.emit('out', 'pong ' + text);
     }));
 
     parser.use(new Command('reverse', 'reverse [bool:invert] [string:text+]', function(runtime){
@@ -16,34 +19,36 @@ let mmud = function(io){
         if(invert){
             text = text.split('').reverse().join('');
         }
-        runtime.session.emit('text', text);
+        runtime.session.emit('out', text);
     }));
 
     parser.use(new Command('repeat', 'repeat [int:number] [string:text+]', function(runtime){
         var number = runtime.args.number;
         var text = runtime.args.text || "";
-        runtime.session.emit('text', text.repeat(number));
+        runtime.session.emit('out', text.repeat(number));
     }));
 
-    io.on('connection', function(socket){
-        console.log('Connection id:'+socket.id);
+    let connect = function(client){
+        console.log('Connection received');
 
-        socket.on('action', function(action){
-            socket.emit('echo', '> '+action);
-            parser.exec(action, {session : socket}).then(function(res){
-
+        client.on('in', function(action){
+            if(action.length == 0){
+                return;
+            }
+            parser.exec(action, {session : client}).then(function(res){
             }).catch(function(err){
                 console.log(err);
-                socket.emit('text', 'Command not found');
+                client.emit('out', 'Command not found');
             });
         });
 
-        socket.on('disconnect', function(){
-            console.log('Disconnection id:'+socket.id);
-
-            //io.to(socket.id).emit('text', "hello");
+        client.on('end', function(){
+            console.log('Connection ended');
         });
-    });
+    };
+
+    new IoService(http).on('connection', connect);
+    new NetService().on('connection', connect);
 };
 
 

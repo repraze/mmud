@@ -8,11 +8,7 @@ class Client{
         this.events = {};
 
         this.socket.on('text', function(str){
-            this.fire('text', str);
-        }.bind(this));
-
-        this.socket.on('echo', function(str){
-            this.fire('echo', str);
+            this.emit('text', str);
         }.bind(this));
     }
 
@@ -34,7 +30,7 @@ class Client{
         }
     }
 
-    fire(name, args){
+    emit(name, args){
         if(this.events[name]){
             this.events[name].forEach(function(cb){
                 cb(args);

@@ -40,10 +40,8 @@ class Command{
         for(var i = 0; i < syntax.length; ++i) {
             let key = syntax[i];
             if(key.charAt(0)==='['){
-                let param = key.match(/\[([^:\+]*):?([^\+]*)?(\+)?\]/);
-                let name = param[2] || param[1];
-                let type = param[2] ?  param[1] : undefined;
-                let multy = !!param[3];
+                let [,type,name,multy] = key.match(/\[(?:([^:\+]*):)?([^\+]*)(\+)?\]/);
+                console.log(type,name,multy);
 
                 let value = multy ? tockens.join(' ') : tockens.shift();
                 if(type && validators[type]){

@@ -25,15 +25,31 @@
                 sroll.scrollTop(h);
             }
 
+            var last;
             var count = 0;
-            var add = function(str, type){
-                var shouldScroll = sroll[0].scrollHeight===sroll.scrollTop()+sroll[0].offsetHeight;
-
-                text.append('<div'+(type?' class="mmud-'+type+'"':'')+'>'+str.replace(/(?:\r\n|\r|\n)/g, '<br />')+'</div>');
+            var newLine = function(){
+                last = $('<div class="mmud-line"></div>');
+                text.append(last);
+                ++count;
                 if(count<settings.max){
                     ++count;
                 }else{
                     text.find('div').first().remove();
+                }
+                return last;
+            };
+            newLine();
+
+            var add = function(str){
+                var shouldScroll = sroll[0].scrollHeight===sroll.scrollTop()+sroll[0].offsetHeight;
+
+                if(str.indexOf("\n")==-1){
+                    last.append(str);
+                }else{
+                    str.split(/\r?\n/).forEach(function(line){
+                        last.append(line);
+                        newLine();
+                    });
                 }
 
                 if(shouldScroll){
@@ -42,10 +58,10 @@
             }
 
             client.on('text', add);
-            client.on('echo', function(str){add(str, "echo")});
 
             form.submit(function(){
                 var str = input.val();
+                add(str+"\n");
                 if(str !== ""){
                     client.send(str);
                 }
