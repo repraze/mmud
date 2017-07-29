@@ -1,10 +1,10 @@
-const {Session, SessionManager} = require(__dirname+'/session');
+const {Session, SessionManager} = require(__dirname+'/service/session');
 const {Parser, Command} = require(__dirname+'/parser');
 
-const IoService = require(__dirname+'/services/io-service');
-const NetService = require(__dirname+'/services/net-service');
+const IoService = require(__dirname+'/service/io-service');
+const NetService = require(__dirname+'/service/net-service');
 
-let mmud = function(http){
+let mmud = function(){
     let manager = new SessionManager();
     let parser  = new Parser();
 
@@ -47,7 +47,7 @@ let mmud = function(http){
         });
     };
 
-    new IoService(http).on('connection', connect);
+    new IoService().on('connection', connect);
     new NetService().on('connection', connect);
 };
 

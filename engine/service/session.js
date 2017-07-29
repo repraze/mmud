@@ -1,6 +1,6 @@
 class Session{
     constructor(){
-        this.sockets = [];
+        this.connections = [];
     }
     has(socket){
         return !!(this.socket.find((s)=>{return s.id === socket.id;}));
