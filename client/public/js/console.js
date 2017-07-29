@@ -2,7 +2,8 @@
     const isMobile = ('ontouchstart' in document.documentElement);
     $.fn.mmud = function(settings, client){
         settings = Object.assign({
-            max : 100
+            max : 100,
+            lineWidth : 80
         }, settings);
         client = client || new Client();
 
@@ -27,28 +28,45 @@
 
             var last;
             var count = 0;
+            var linelength = 0;
             var newLine = function(){
                 last = $('<div class="mmud-line"></div>');
                 text.append(last);
-                ++count;
-                if(count<settings.max){
+                if(count<=settings.max){
                     ++count;
                 }else{
                     text.find('div').first().remove();
                 }
+                linelength = 0;
                 return last;
             };
             newLine();
+            var addStr = function(str){
+                let available = settings.lineWidth-linelength;
+                if(str.length < available){
+                    linelength+=str.length;
+                    last.append(str);
+                }else{
+                    linelength+=available;
+                    last.append(str.substring(0,available));
+                    newLine();
+                    addStr(str.substring(available,str.length));
+                }
+            };
 
             var add = function(str){
                 var shouldScroll = sroll[0].scrollHeight===sroll.scrollTop()+sroll[0].offsetHeight;
 
                 if(str.indexOf("\n")==-1){
                     last.append(str);
+                    addStr(str);
                 }else{
+                    console.log(str.split(/\r?\n/));
                     str.split(/\r?\n/).forEach(function(line){
-                        last.append(line);
-                        newLine();
+                        addStr(line);
+                        if(line !== ""){
+                            newLine();
+                        }
                     });
                 }
 
