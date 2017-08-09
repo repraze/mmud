@@ -31,6 +31,8 @@ let mmud = function(){
     let connect = function(client){
         console.log('Connection received');
 
+        client.emit('out', '--- MMUD engine ---');
+
         client.on('in', function(action){
             if(action.length == 0){
                 return;

@@ -1,0 +1,16 @@
+<div class="mmud">
+    <div class="mmud-title">{{title}}</div>
+    <div class="mmud-screen">
+        <div class="mmud-screen-scroll">
+            <div class="mmud-screen-text">
+                <div class='mmud-line' ng-repeat="line in lines">{{line.text}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="mmud-input">
+        <form ng-submit="$ctrl.submit($event)" class="mmud-form" method="post">
+            <textarea ng-keypress="$ctrl.inputChange($event)" ng-model="action" class="mmud-action" name="action" rows="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus></textarea>
+            <button class="mmud-send" type="submit" name="send">Send</button>
+        </form>
+    </div>
+</div>

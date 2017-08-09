@@ -11,33 +11,13 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
         <script src="js/client.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
         <script src="js/autosize.min.js"></script>
-        <script src="js/console.js"></script>
+        <script src="js/console2.js"></script>
     </head>
     <body>
-        <div class="content">
-            <div class="mmud">
-                <div class="mmud-title"></div>
-                <div class="mmud-screen">
-                    <div class="mmud-screen-scroll">
-                        <div class="mmud-screen-text">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="mmud-input">
-                    <form class="mmud-form" method="post">
-                        <textarea class="mmud-action" name="action" rows="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus></textarea>
-                        <button class="mmud-send" type="submit" name="send">Send</button>
-                    </form>
-                </div>
-            </div>
-            <script type="text/javascript">
-                $(function(){
-                    $(".mmud").mmud();
-                });
-            </script>
+        <div class="content" ng-app="MMUDApp">
+            <console></console>
         </div>
     </body>
 </html>
