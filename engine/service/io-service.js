@@ -17,7 +17,6 @@ class IoService extends Service{
             let io = socket(http);
             io.on('connection', function(socket){
                 let c = new Connection("io");
-                this.emit('connection', c);
                 c.on('out', function(str, newline=true){
                     if(newline === true){
                         str+='\n';
@@ -31,6 +30,7 @@ class IoService extends Service{
                     c.emit('end');
                     console.log('Io disconnection id:'+socket.id);
                 });
+                this.emit('connection', c);
             }.bind(this));
 
             this.emit('ready');

@@ -1,67 +1,97 @@
-(function($){
-    const isMobile = ('ontouchstart' in document.documentElement);
-    $.fn.mmud = function(settings, client){
-        settings = Object.assign({
+const isMobile = ('ontouchstart' in document.documentElement);
+
+var module = angular.module('console', []);
+
+module.factory('socket', ['$rootScope', function($rootScope){
+    class Socket{
+        constructor(settings){
+            this.settings = Object.assign({
+                origin  : window.location.origin,
+                port    : 8888
+            }, settings);
+            this.socket = io(this.url);
+        }
+        on(eventName, callback){
+            this.socket.on(eventName, function(){
+                var args = arguments;
+                $rootScope.$apply(function(){callback.apply(this.socket, args);}.bind(this));
+            }.bind(this));
+        }
+        emit(eventName, data, callback){
+            this.socket.emit(eventName, data, function(){
+                var args = arguments;
+                $rootScope.$apply(function(){
+                    if(callback){callback.apply(this.socket, args);}
+                }.bind(this));
+            }.bind(this));
+        }
+        get url(){
+            return this.settings.origin+':'+this.settings.port;
+        }
+    }
+
+    return Socket;
+}]);
+
+module.component('console', {
+    controller: ["$scope", "$element", "$timeout", "socket", function($scope, $element, $timeout, socket){
+        var $ctrl = this;
+        var settings = Object.assign({
             max : 100,
             lineWidth : 80
         }, settings);
-        client = client || new Client();
 
-        return this.each(function(){
-            var $this = $(this);
+        var client = new socket();
 
-            var title   = $($this.find('.mmud-title')[0]);
-            var form    = $($this.find('.mmud-form')[0]);
-            var input   = $($this.find('.mmud-action')[0]);
-            var button  = $($this.find('.mmud-send')[0]);
-            var sroll   = $($this.find('.mmud-screen-scroll')[0]);
-            var text    = $($this.find('.mmud-screen-text')[0]);
+        $scope.title = client.url;
+        $scope.lines = [];
+        $scope.action = "";
+        $scope.connected = false;
 
-            title.text(client.url);
+        client.on('connect', function(){
+            console.log("Connected");
+            $scope.connected = true;
+        });
+        client.on('disconnect', function(){
+            console.log("Disconected");
+            $scope.connected = false;
+        });
 
-            autosize(input);
+        var input = $element.find('textarea')[0];
+        var scroller = $element[0].getElementsByClassName('mmud-screen-scroll')[0];
 
+        autosize(input);
+        var add = (function(){
             var scroll = function(){
-                var h = sroll[0].scrollHeight;
-                sroll.scrollTop(h);
+                var h = scroller.scrollHeight;
+                scroller.scrollTop = h;
             }
-
-            var last;
-            var count = 0;
-            var linelength = 0;
+            var last = function(){
+                return $scope.lines[$scope.lines.length-1];
+            };
             var newLine = function(){
-                last = $('<div class="mmud-line"></div>');
-                text.append(last);
-                if(count<=settings.max){
-                    ++count;
-                }else{
-                    text.find('div').first().remove();
+                $scope.lines.push({text : ""});
+                if($scope.lines.length > settings.max){
+                    $scope.lines.shift();
                 }
-                linelength = 0;
-                return last;
             };
             newLine();
             var addStr = function(str){
-                let available = settings.lineWidth-linelength;
+                var linelength = last().text.length;
+                var available = settings.lineWidth-linelength;
                 if(str.length < available){
-                    linelength+=str.length;
-                    last.append(str);
+                    last().text += str;
                 }else{
-                    linelength+=available;
-                    last.append(str.substring(0,available));
+                    last().text += str.substring(0,available);
                     newLine();
                     addStr(str.substring(available,str.length));
                 }
             };
-
-            var add = function(str){
-                var shouldScroll = sroll[0].scrollHeight===sroll.scrollTop()+sroll[0].offsetHeight;
-
+            return function(str){
+                var shouldScroll = scroller.scrollHeight===scroller.scrollTop+scroller.offsetHeight;
                 if(str.indexOf("\n")==-1){
-                    last.append(str);
                     addStr(str);
                 }else{
-                    console.log(str.split(/\r?\n/));
                     str.split(/\r?\n/).forEach(function(line){
                         addStr(line);
                         if(line !== ""){
@@ -69,32 +99,35 @@
                         }
                     });
                 }
-
                 if(shouldScroll){
-                    scroll();
+                    $timeout(function(){
+                        scroll();
+                    }, 0);
                 }
+            };
+        })();
+
+        client.on('text', add);
+
+        $ctrl.submit = function(e){
+            e.preventDefault();
+            var str = $scope.action;
+            add(str+"\n");
+            if(str !== ""){
+                client.emit("action", str);
             }
-
-            client.on('text', add);
-
-            form.submit(function(){
-                var str = input.val();
-                add(str+"\n");
-                if(str !== ""){
-                    client.send(str);
-                }
-                input.val("");
+            $scope.action = "";
+            $timeout(function(){
                 autosize.update(input);
                 input.focus();
-                return false;
-            });
+            }, 0);
+        };
 
-            input.keypress(function(event){
-                if(!isMobile && event.keyCode === 13 && !event.shiftKey){
-                    form.submit();
-                    return false;
-                }
-            });
-        });
-    };
-}(jQuery));
+        $ctrl.inputChange = function(e){
+            if(!isMobile && e.which === 13 && !e.shiftKey){
+                $ctrl.submit(e);
+            }
+        };
+    }],
+    templateUrl: 'templates/console.html'
+});

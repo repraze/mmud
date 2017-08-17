@@ -12,7 +12,6 @@ class NetService extends Service{
 
         net.createServer(function(socket){
             let c = new Connection("net");
-            this.emit('connection', c);
             let line = "";
             c.on('out', function(str, newline=true){
                 if(newline === true){
@@ -31,11 +30,11 @@ class NetService extends Service{
                     }
                 });
             });
-
             socket.on('end', function(){
                 c.emit('end');
                 console.log('Net disconnection');
             });
+            this.emit('connection', c);
         }.bind(this)).listen(this.settings.port, function(){
             this.emit('ready');
         }.bind(this));

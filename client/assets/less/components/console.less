@@ -7,11 +7,23 @@
     background: darken(@bg, 2%);
 
     .mmud-title{
+        position: relative;
         flex: 0 1 auto;
         color: @color;
         background: @accent;
         padding: @unit/2;
         font-weight: bold;
+        .mmud-status{
+            border: 2px solid @color;
+            border-radius: 50%;
+            display: inline-block;
+            width: @unit/2;
+            height: @unit/2;
+            margin-right: @unit/2;
+            &.mmud-connected{
+                background-color: @color;
+            }
+        }
     }
 
     .mmud-screen{
@@ -27,7 +39,7 @@
 
         .mmud-screen-scroll{
             padding: @unit/2;
-            overflow-x: hidden;
+            overflow-x: auto;
             overflow-y: scroll;
             position: absolute;
             top: 0;
