@@ -13,10 +13,10 @@ class Service extends EventEmitter{
                 console.log(this.name + ' ready');
             });
             this.on('connection', (c) =>{
-                console.log('New '+c.type+' connection '+c.id);
+                console.log(c.type+' connection '+c.id);
             });
-            this.on('ready', () =>{
-                console.log(this.name + ' ready');
+            this.on('disconnection', (c) =>{
+                console.log(c.type+' disconnection '+c.id);
             });
         }
     }

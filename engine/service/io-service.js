@@ -28,8 +28,8 @@ class IoService extends Service{
                 });
                 socket.on('disconnect', function(){
                     c.emit('end');
-                    console.log('Io disconnection id:'+socket.id);
-                });
+                    this.emit('disconnection', c);
+                }.bind(this));
                 this.emit('connection', c);
             }.bind(this));
 

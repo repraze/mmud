@@ -1,23 +1,51 @@
+const Connection = require(__dirname+'/connection');
+
 class Session{
     constructor(){
         this.connections = [];
+        this.buffer = [];
     }
-    has(socket){
-        return !!(this.socket.find((s)=>{return s.id === socket.id;}));
+    has(connection){
+        return !!(this.connections.find((c)=>{return c.id === connection.id;}));
     }
     empty(){
-        return this.sockets.length === 0;
+        return this.connections.length === 0;
     }
-    add(socket){
-        if(!this.has(socket)){
-            this.sockets.push(socket);
+    add(connection){
+        if(Array.isArray(connection)){
+            connection.forEach((c)=>{this.add(c)})
+        }else{
+            if(!this.has(connection)){
+                connection.on('in')
+                this.connections.push(connection);
+            }
         }
     }
-    remove(socket){
-        this.sockets = this.sockets.filter(((s)=>{return s.id !== socket.id;}));
+    remove(connection){
+        if(Array.isArray(connection)){
+            connection.forEach((c)=>{this.remove(c)})
+        }else{
+            this.connections = this.connections.filter(
+                (connection instanceof Connection) ?
+                (c)=>{return c.id !== connection.id;} :
+                (c)=>{return c.id !== connection;}
+            );
+        }
+    }
+    on(){
+        this.connections.forEach((c)=>{c.on(...args)});
+    }
+    once(){
+        this.connections.forEach((c)=>{c.once(...args)});
     }
     emit(...args){
-        this.sockets.forEach((s)=>{s.emit(...args)});
+        this.connections.forEach((c)=>{c.emit(...args)});
+    }
+    in(cb){
+
+    }
+    out(text){
+        this.emit('out', text);
     }
 }
 
